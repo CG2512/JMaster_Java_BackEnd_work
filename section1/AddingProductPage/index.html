@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/bootstrap.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="border border-1 border-dark w-50 mx-auto mt-4 mb-4 my-auto p-5">
+            <h2 class="text-center mb-4">Adding new product</h1>
+            <form>
+                <div class="mb-3">
+                    <label for="productID" class="form-label">ID</label>
+                    <input type="number" class="form-control" id="InputProductID" placeholder="Enter product ID" aria-describedby="ID">
+                </div>
+
+                <div class="mb-3">
+                    <label for="productName" class="form-label">Product name</label>
+                    <input type="text" class="form-control" id="InputUsername" placeholder="Enter product name" aria-describedby="ProductName">
+                </div>
+
+                <div class="mb-3">
+                    <label for="productPrice" class="form-label">Price($)</label>
+                    <input type="number" class="form-control" step=0.01 form-control" id="InputPrice" placeholder="Price" aria-describedby="Price">
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="InputDescription" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="inputProductImage">Image</label>
+                    <input type="file" class="form-control" id="inputProductImage">
+                  </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" aria-label="Category select">
+                        <option selected>Select</option>
+                        <option value="1">Tools</option>
+                        <option value="2">Electronics</option>
+                        <option value="3">Furniture</option>
+                    </select>
+                </div>
+            </form>
+            <button type="submit" class="btn btn-primary d-grid col-12">Add new product</button>
+        </div>
+        <script src="js/bootstrap.bundle.js" async defer></script>
+    </body>
+</html>
