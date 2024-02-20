@@ -1,19 +1,25 @@
 
-<form th:action=@{/user/new} method=post>
+<form th:action=@{/user/new} method=post enctype="multipart/form-data"
+th:object="${user}">
 
 <!-- <div>
 <label for=id>ID</label>
 <input type="number" name="id">
 </div> -->
-
 <div>
-	<label for="name">Name</label>
-	<input type="text" name="name">
+<label for="file" th:text="#{user.avatar.file}"></label>
+<input type="file" name="file" accept="image/*">
+</div>
+<div>
+	<label for="name" th:text="#{user.name}"></label>
+	<input type="text" th:field="*{name}">
+	<p th:errors="*{name}"></p>
 </div>
 
 <div>
-	<label for="age">Age</label>
-	<input type="number" name="age">
+	<label for="age" th:text="#{user.age}"></label>
+	<input type="number" th:field="*{age}">
+	<p th:errors="*{age}"></p>
 </div>
 
 <div>
@@ -32,4 +38,5 @@
 </div>
 
 <button type="submit">Submit</button>
+
 </form>

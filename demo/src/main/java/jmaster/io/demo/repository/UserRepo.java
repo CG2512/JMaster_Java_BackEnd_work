@@ -2,12 +2,14 @@ package jmaster.io.demo.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import jmaster.io.demo.dto.User;
+import jmaster.io.demo.entity.User;
 
 public interface UserRepo
 extends JpaRepository<User, Integer>{
@@ -16,10 +18,10 @@ extends JpaRepository<User, Integer>{
 	User findByUsername(String username);
 	
 	//where name = :s
-	List<User> findByName(String s);
+	Page<User> findByName(String s,Pageable pageable);
 	
 	@Query("Select u FROM User u WHERE u.name LIKE :x")
-	List<User> searchByName(@Param("x") String s);
+	Page<User> searchByName(@Param("x") String s,Pageable pageable);
 	
 	@Query("Select u FROM User u WHERE u.name LIKE :x"
 			+ "	OR u.username LIKE :x")
