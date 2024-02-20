@@ -1,0 +1,46 @@
+<html>
+<head>
+<title> Users</title>
+</head>
+
+
+<body>
+
+<a th:href="@{/user/new}">New</a>
+
+<form th:action="@{/user/search}" method="get">
+	<input type="text" name="keyword" placeholder="Tim ten...">
+	<button type="submit">Search</button>
+</form>
+
+
+<table border="1" >
+	<tr>
+		<td>ID</td>
+		<td>Name</td>
+		<td>Age</td>
+		<td>Username</td>
+		<td>Password</td>
+		<td>Home Address</td>
+		<td>Action</td>
+	</tr>
+	<!-- bang noi dung voi Expression Language -->
+	<tr th:each="u : ${userList}">
+		<td th:text=${u.id}>1</td>
+		<td th:text=${u.name}>Test</td>
+		<td th:text=${u.age}></td>
+		<td th:text=${u.username}></td>
+		<td th:text=${u.password}></td>
+		<td th:text=${u.homeAddress}></td>
+		<!-- se goi ham getName() -->
+		<td>
+			<a th:href="@{'/user/delete?id=' + ${u.id} }">Delete</a>
+			<a th:href="@{'/user/edit?id=' + ${u.id} }">Edit</a>
+		</td>
+	</tr>
+</table>
+
+</body>
+
+
+</html>
