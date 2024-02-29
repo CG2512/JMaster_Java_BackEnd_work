@@ -125,7 +125,7 @@ public class UserService {
 		}
 		
 		if (searchDTO.getSize() == null) {
-			searchDTO.setSize(5);
+			searchDTO.setSize(10);
 		}
 		PageRequest pageRequest=PageRequest.of(searchDTO.getCurrentPage(), searchDTO.getSize(),sortBy);
 		Page<User> page=userRepo.searchByName("%"+ searchDTO.getKeyword() + "%",pageRequest);

@@ -10,10 +10,33 @@
 	<div layout:fragment="content">
 		<h1>List ticket</h1>
 		<a th:href="@{/ticket/new}">New ticket</a>
+		<div>Page: 
+		<a th:href="@{/ticket/search?currentPage=0&size=10}">1</a> 
+		<a th:href="@{/ticket/search?currentPage=1&size=10}">2</a>
+		<a th:href="@{/ticket/search?currentPage=2&size=10}">3</a>
+		</div>
+		
+		<div> 
+		<form method="get" th:action="@{/ticket/search}" 
+		th:object="${searchDTO}"
+		class="my-3">
+		<input th:field="*{ticketId}" type="number" placeholder="Ticket ID">
+		<input th:field="*{start}" type="text" placeholder="Start - DD/MM/YYYY">
+		<input th:field="*{end}" type="text" placeholder="End - DD/MM/YYYY">
+		<input th:field="*{keyword}" type="text" placeholder="Number">
+		<select th:field="*{departmentId}">
+		<option value="">Choose</option>
+		<option th:each="d : ${departmentList}" 
+		th:value="${d.id}" th:text="${d.name}">
+		</select>
+		<button type="submit" class="btn btn-primary">Search</button>
+		</form>
+		</div>
 		
 		<table class="table table-bordered">
 		<thead class="table-light">
 				<td>ID</td>
+				<td>Department ID</td>
 				<td>Department name</td>
 				<td>Client number</td>
 				<td>Client Complain</td>
@@ -26,6 +49,7 @@
 		
 		<tr th:each="t: ${ticketList}">
 			<td th:text="${t.id}">
+			<td th:text="${t.department.id}">
 			<td th:text="${t.department.name}">
 			<td th:text="${t.clientPhone}">
 			<td th:text="${t.clientComplaint}">

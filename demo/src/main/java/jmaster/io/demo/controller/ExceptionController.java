@@ -12,7 +12,7 @@ public class ExceptionController {
 	
 	//Logger logger = LoggerFactory.getLogger(this.getClass());
 	@ExceptionHandler({NoResultException.class})
-	public String notFound(Exception e) {
+	public String notFound(NoResultException e) {
 		//logger.info("INFO",e);
 		log.info("INFO",e);
 		return "no-data.html";

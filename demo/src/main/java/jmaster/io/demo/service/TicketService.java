@@ -96,7 +96,7 @@ class TicketServiceImpl implements TicketService {
 		}
 
 		if (searchDTO.getSize() == null) {
-			searchDTO.setSize(5);
+			searchDTO.setSize(10);
 		}
 
 		if (searchDTO.getKeyword() == null) {
@@ -105,15 +105,42 @@ class TicketServiceImpl implements TicketService {
 
 		PageRequest pageRequest = PageRequest.of(searchDTO.getCurrentPage(), searchDTO.getSize(), sortBy);
 		Page<Ticket> page = ticketRepo.findAll(pageRequest);
+		
 		if (searchDTO.getStart() != null && searchDTO.getEnd() != null) {
 			page = ticketRepo.searchByDate(searchDTO.getStart(), searchDTO.getEnd(), pageRequest);
 		}
-		if (searchDTO.getDepartmentId() != null) {
+		else if (searchDTO.getStart() != null 
+				&& searchDTO.getEnd() != null
+				&& StringUtils.hasText(searchDTO.getKeyword())) {
+			page = ticketRepo.searchByNameAndDate(searchDTO.getKeyword(),searchDTO.getStart(), searchDTO.getEnd(), pageRequest);
+		}
+		else if (searchDTO.getStart() != null 
+				&& searchDTO.getEnd() == null
+				&& StringUtils.hasText(searchDTO.getKeyword())) {
+			page = ticketRepo.searchByNameAndStart(searchDTO.getKeyword(),searchDTO.getStart(), pageRequest);
+		}
+		else if (searchDTO.getStart() == null 
+				&& searchDTO.getEnd() != null
+				&& StringUtils.hasText(searchDTO.getKeyword())) {
+			page = ticketRepo.searchByNameAndEnd(searchDTO.getKeyword(), searchDTO.getEnd(), pageRequest);
+		}
+		else if(searchDTO.getStart() != null && searchDTO.getEnd() == null) {
+			page = ticketRepo.searchByStart(searchDTO.getStart(), pageRequest);
+		}
+		else if(searchDTO.getStart() == null && searchDTO.getEnd() != null) {
+			page = ticketRepo.searchByEnd(searchDTO.getEnd(), pageRequest);
+		}
+		else if (searchDTO.getDepartmentId() != null) {
 			page = ticketRepo.searchByDepartmentId(searchDTO.getDepartmentId(), pageRequest);
 		}
-		if (StringUtils.hasText(searchDTO.getKeyword())) {
+		
+		else if (StringUtils.hasText(searchDTO.getKeyword())) {
 			page = ticketRepo.searchByName(searchDTO.getKeyword(), pageRequest);
 		}
+		else if (searchDTO.getTicketId() != null) { 
+			page =  ticketRepo.findById(searchDTO.getTicketId(), pageRequest);
+			}
+		 
 
 		PageDTO<List<TicketDTO>> pageDTO = new PageDTO();
 		pageDTO.setTotalPages(page.getTotalPages());

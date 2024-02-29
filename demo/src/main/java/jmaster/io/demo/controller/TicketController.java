@@ -63,12 +63,18 @@ public class TicketController {
 	@GetMapping("/search")
 	public String search(Model model, @ModelAttribute @Valid SearchTicketDTO searchDTO
 			, BindingResult bindingResult) {
-		// khi empty,mac dinh la null.Neu la int thi bat buoc phai la so
-		// tuy bien: bindingResult.rejectValue("size","something")
+		
 		if (bindingResult.hasErrors()) {
+			
+			PageDTO<List<DepartmentDTO>> pageDTO
+			=departmentService.search(new SearchDTO());
+					
+			model.addAttribute("departmentList", pageDTO.getData());
+			
 			return "ticket/tickets.html"; // khi co loi thi tra view(se bi mat du lieu)
 		}
-		
+		PageDTO<List<DepartmentDTO>> pageDTO
+		=departmentService.search(new SearchDTO());
 		
 		PageDTO<List<TicketDTO>> pageTicket = ticketService.search(searchDTO);
 
@@ -76,9 +82,12 @@ public class TicketController {
 		model.addAttribute("totalPage",pageTicket.getTotalPages());
 		model.addAttribute("totalElements", pageTicket.getTotalElements());
 		model.addAttribute("searchDTO", searchDTO);
+		model.addAttribute("departmentList", pageDTO.getData());
 
 		return "ticket/tickets.html";
 	}
+	
+	
 	
 	@GetMapping("/delete") // ?id=1000
 	public String delete(@RequestParam("id") int id) {

@@ -17,4 +17,8 @@ public class SearchTicketDTO extends SearchDTO {
 	private Date end;
 	
 	private Integer departmentId;
+	
+	private Integer ticketId;
+	
+	
 }

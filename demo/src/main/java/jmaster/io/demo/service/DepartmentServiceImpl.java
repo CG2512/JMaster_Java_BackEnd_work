@@ -80,7 +80,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 		}
 
 		if (searchDTO.getSize() == null) {
-			searchDTO.setSize(5);
+			searchDTO.setSize(10);
 		}
 		
 		if(searchDTO.getKeyword() == null) {
