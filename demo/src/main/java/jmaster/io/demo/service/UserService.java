@@ -1,6 +1,5 @@
 package jmaster.io.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import jakarta.transaction.Transactional;
+import jmaster.io.demo.dto.DepartmentDTO;
 import jmaster.io.demo.dto.PageDTO;
 import jmaster.io.demo.dto.SearchDTO;
 import jmaster.io.demo.dto.UserDTO;
+import jmaster.io.demo.entity.Department;
 import jmaster.io.demo.entity.User;
 import jmaster.io.demo.repository.UserRepo;
 
@@ -39,7 +40,7 @@ public class UserService {
 		 */
 		
 		User user=new ModelMapper().map(userDTO,User.class);
-		
+		//System.out.println("Department is "+user.getDepartment().getId());
 		userRepo.save(user);
 	}
 	
@@ -55,9 +56,16 @@ public class UserService {
 		User currentUser=userRepo.findById(userDTO.getId()).orElse(null);
 		//neu co thi update thuoc tinh
 		if (currentUser != null) {
-		currentUser.setName(userDTO.getName());
-		currentUser.setAge(userDTO.getAge());
-		currentUser.setHomeAddress(userDTO.getHomeAddress());
+			
+			  currentUser.setName(userDTO.getName()); currentUser.setAge(userDTO.getAge());
+			  currentUser.setHomeAddress(userDTO.getHomeAddress());
+			  currentUser.setBirthdate(userDTO.getBirthdate());
+			  
+			  DepartmentDTO newDepartmentDTO=userDTO.getDepartment();
+			  
+			  currentUser.setDepartment (new ModelMapper().map(newDepartmentDTO,
+			  Department.class));
+			 
 		userRepo.save(currentUser);
 		}
 	}
@@ -97,6 +105,7 @@ public class UserService {
 		//return userDTOList;
 		
 		//java 8
+		
 		return userList.stream().map(u -> convert(u))
 				.collect(Collectors.toList());
 	}

@@ -17,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jmaster.io.demo.dto.DepartmentDTO;
 import jmaster.io.demo.dto.PageDTO;
 import jmaster.io.demo.dto.SearchDTO;
 import jmaster.io.demo.dto.UserDTO;
+import jmaster.io.demo.service.DepartmentService;
 import jmaster.io.demo.service.UserService;
 
 @Controller
@@ -27,6 +29,9 @@ public class UserController {
 
 	@Autowired // DI
 	UserService userService;
+	
+	@Autowired
+	DepartmentService departmentService;
 
 	@GetMapping("/user/list")
 	public String list(
@@ -34,25 +39,35 @@ public class UserController {
 			Model model) {
 
 		List<UserDTO> users = userService.getAll();
-
-		// req.setAttribute("userList", users);
+		
 		model.addAttribute("userList", users);
 
 		model.addAttribute("searchDTO", new SearchDTO());
-		return "users.html";
+		return "user/users.html";
 	}
 
 	@GetMapping("/user/new")
 	public String newUser(Model model) {
+		
+		PageDTO<List<DepartmentDTO>> pageDTO
+		=departmentService.search(new SearchDTO());
+				
 		model.addAttribute("user", new UserDTO());
-		return "new-user.html";
+		model.addAttribute("departmentList", pageDTO.getData());
+		return "user/new-user.html";
 	}
 
 	@PostMapping("/user/new")
-	public String newUser(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult)
+	public String newUser(@ModelAttribute("user") @Valid UserDTO userDTO
+			,BindingResult bindingResult
+			,Model model)
 			throws IllegalStateException, IOException {
 		if (bindingResult.hasErrors()) {
-			return "new-user.html";
+			PageDTO<List<DepartmentDTO>> pageDTO
+			=departmentService.search(new SearchDTO());
+			
+			model.addAttribute("departmentList", pageDTO.getData());
+			return "user/new-user.html";
 		}
 		if (!userDTO.getFile().isEmpty()) {
 			// ten file
@@ -65,6 +80,7 @@ public class UserController {
 			userDTO.setAvatarURL(fileName);
 		}
 		userService.create(userDTO);
+		
 
 		return "redirect:/user/list";
 	}
@@ -86,7 +102,7 @@ public class UserController {
 		// khi empty,mac dinh la null.Neu la int thi bat buoc phai la so
 		// tuy bien: bindingResult.rejectValue("size","something")
 		if (bindingResult.hasErrors()) {
-			return "users.html"; // khi co loi thi tra view(se bi mat du lieu)
+			return "user/users.html"; // khi co loi thi tra view(se bi mat du lieu)
 		}
 
 		PageDTO<List<UserDTO>> pageUser = userService.searchName(searchDTO);
@@ -96,18 +112,35 @@ public class UserController {
 		model.addAttribute("totalElements", pageUser.getTotalElements());
 		model.addAttribute("searchDTO", searchDTO);
 
-		return "users.html";
+		return "user/users.html";
 	}
 
 	@GetMapping("/user/edit") // ?id=1000
 	public String edit(@RequestParam("id") int id, Model model) {
 		UserDTO userDTO = userService.getById(id);
 		model.addAttribute("user", userDTO); // day user qua view
-		return "edit-user.html";
+		
+		PageDTO<List<DepartmentDTO>> pageDTO
+		=departmentService.search(new SearchDTO());
+		
+		model.addAttribute("departmentList", pageDTO.getData());
+		model.addAttribute("user", userDTO); // day user qua view
+		return "user/edit-user.html";
 	}
 
 	@PostMapping("/user/edit")
-	public String edit(@ModelAttribute UserDTO userDTO) {
+	public String edit(@ModelAttribute("user") @Valid UserDTO userDTO
+			,BindingResult bindingResult
+			,Model model) {
+
+		if (bindingResult.hasErrors()) {
+					
+			PageDTO<List<DepartmentDTO>> pageDTO
+			=departmentService.search(new SearchDTO());
+			
+			model.addAttribute("departmentList", pageDTO.getData());
+			return "user/edit-user.html";
+		}
 		userService.update(userDTO);
 
 		return "redirect:/user/list";

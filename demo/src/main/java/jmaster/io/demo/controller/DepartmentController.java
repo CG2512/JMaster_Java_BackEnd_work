@@ -1,6 +1,5 @@
 package jmaster.io.demo.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -13,13 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jmaster.io.demo.dto.DepartmentDTO;
 import jmaster.io.demo.dto.PageDTO;
 import jmaster.io.demo.dto.SearchDTO;
-import jmaster.io.demo.dto.UserDTO;
 import jmaster.io.demo.service.DepartmentService;
 
 @Controller
@@ -54,12 +51,10 @@ public class DepartmentController {
 		// khi empty,mac dinh la null.Neu la int thi bat buoc phai la so
 		// tuy bien: bindingResult.rejectValue("size","something")
 		if (bindingResult.hasErrors()) {
-			return "departments.html"; // khi co loi thi tra view(se bi mat du lieu)
+			return "department/departments.html"; // khi co loi thi tra view(se bi mat du lieu)
 		}
 		
-		if(searchDTO.getKeyword() == null) {
-			searchDTO.setKeyword("");
-		}
+		
 		PageDTO<List<DepartmentDTO>> pageDepartment = departmentService.search(searchDTO);
 
 		model.addAttribute("departmentList", pageDepartment.getData()); // tra List<User>
@@ -67,20 +62,20 @@ public class DepartmentController {
 		model.addAttribute("totalElements", pageDepartment.getTotalElements());
 		model.addAttribute("searchDTO", searchDTO);
 
-		return "departments.html";
+		return "department/departments.html";
 	}
 	
 	@GetMapping("/new")
 	public String create(Model model) {
 		model.addAttribute("department", new DepartmentDTO());
-		return "new-department.html";
+		return "department/new-department.html";
 	}
 	
 	@PostMapping("/new")
 	public String newDepartment(@ModelAttribute("department") @Valid DepartmentDTO departmentDTO, BindingResult bindingResult)
 			throws IllegalStateException, IOException {
 		if (bindingResult.hasErrors()) {
-			return "new-department.html";
+			return "department/new-department.html";
 		}
 				departmentService.create(departmentDTO);
 
@@ -91,7 +86,7 @@ public class DepartmentController {
 	public String edit(@RequestParam("id") int id, Model model) {
 		DepartmentDTO departmentDTO = departmentService.getById(id);
 		model.addAttribute("department", departmentDTO); // day user qua view
-		return "edit-department.html";
+		return "department/edit-department.html";
 	}
 
 	@PostMapping("/edit")

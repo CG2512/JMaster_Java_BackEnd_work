@@ -1,0 +1,47 @@
+<html layout:decorate="/template.html">
+<head>
+<title>Tickets</title>
+</head>
+
+
+<body>
+
+
+	<div layout:fragment="content">
+		<h1>List ticket</h1>
+		<a th:href="@{/ticket/new}">New ticket</a>
+		
+		<table class="table table-bordered">
+		<thead class="table-light">
+				<td>ID</td>
+				<td>Department name</td>
+				<td>Client number</td>
+				<td>Client Complain</td>
+				<td>Created At</td>
+				<td>Answer</td>
+				<td>Processed?</td>
+				<td>Processed at</td>
+				<td>Action</td>
+		</thead>
+		
+		<tr th:each="t: ${ticketList}">
+			<td th:text="${t.id}">
+			<td th:text="${t.department.name}">
+			<td th:text="${t.clientPhone}">
+			<td th:text="${t.clientComplaint}">
+			<td th:text=${#dates.format(t.createdAt,'dd/MM/yyyy')}>
+			<td th:text="${t.answer}">
+			<td th:text="${t.status}">
+			<td th:text=${#dates.format(t.processDate,'dd/MM/yyyy')}>
+		<td>
+			<a th:href="@{'/ticket/delete?id=' + ${t.id} }">Delete</a>
+			<a th:href="@{'/ticket/answer?id=' + ${t.id} }">Answer</a>
+		</td>
+		</tr>
+		</table>
+		
+	</div>
+	
+	</body>
+	
+</html>

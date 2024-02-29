@@ -1,0 +1,31 @@
+<html layout:decorate="/template.html">
+<head>
+<title>Users</title>
+</head>
+
+
+<body>
+
+	<div layout:fragment="content">
+
+		<form th:action=@{/department/new} method=post
+			th:object="${department}">
+
+			<!-- <div>
+<label for=id>ID</label>
+<input type="number" name="id">
+</div> -->
+
+			<div>
+				<label for="name" th:text="#{department.name}"></label> <input
+					type="text" th:field="*{name}">
+				<p th:errors="*{name}"></p>
+			</div>
+
+
+			<button type="submit">Submit</button>
+
+		</form>
+	</div>
+</body>
+</html>

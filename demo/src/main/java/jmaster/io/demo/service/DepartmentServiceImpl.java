@@ -16,9 +16,7 @@ import jakarta.transaction.Transactional;
 import jmaster.io.demo.dto.DepartmentDTO;
 import jmaster.io.demo.dto.PageDTO;
 import jmaster.io.demo.dto.SearchDTO;
-import jmaster.io.demo.dto.UserDTO;
 import jmaster.io.demo.entity.Department;
-import jmaster.io.demo.entity.User;
 import jmaster.io.demo.repository.DepartmentRepo;
 
 @Service
@@ -84,6 +82,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 		if (searchDTO.getSize() == null) {
 			searchDTO.setSize(5);
 		}
+		
+		if(searchDTO.getKeyword() == null) {
+			searchDTO.setKeyword("");
+		}
+		
 		PageRequest pageRequest = PageRequest.of(searchDTO.getCurrentPage(), searchDTO.getSize(), sortBy);
 		Page<Department> page = departmentRepo.searchName("%" + searchDTO.getKeyword() + "%", pageRequest);
 

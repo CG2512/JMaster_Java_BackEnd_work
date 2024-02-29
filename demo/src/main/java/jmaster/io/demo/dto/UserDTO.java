@@ -1,5 +1,8 @@
 package jmaster.io.demo.dto; //Package dung cho Map Object voi View
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.Min;
@@ -24,5 +27,8 @@ public class UserDTO {
 	private MultipartFile file;
 	//ManyToOne
 	//swap to int departmentID later(and make findById method for DepartmentRepo)
-	private DepartmentDTO departmentDTO;
+	private DepartmentDTO department;
+	
+	@DateTimeFormat(pattern="dd/MM/yyyy")
+	private Date birthdate;
 }
