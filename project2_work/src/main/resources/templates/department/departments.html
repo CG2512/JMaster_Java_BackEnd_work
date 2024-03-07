@@ -1,0 +1,57 @@
+<html layout:decorate="/template.html">
+<head>
+<title>Departments</title>
+</head>
+
+
+<body>
+
+	<!-- <p>Ko co trong giao dien</p>  -->
+
+	<div layout:fragment="content" class="table-responsive">
+		<h1>List user</h1>
+		<a th:href="@{/department/new}">New department</a>
+
+		<form th:action="@{/department/search}" method="get"
+			th:object="${searchDTO}">
+			<input th:field="*{keyword}" type="text" placeholder="Tim ten...">
+			<p th:errors="*{keyword}"></p>
+			<input type="text" th:field="*{currentPage}"
+				placeholder="Trang hien tai"> <input type="text"
+				th:field="*{size}" placeholder="Nhap size..."> <input
+				type="text" th:field="*{sortedField}"
+				placeholder="Sap xem theo thuoc tinh...">
+			<button type="submit">Search</button>
+		</form>
+
+		<p th:text="|Total pages: ${totalPage}|"></p>
+		<p th:text="|Total elements: ${totalElements}|"></p>
+		<div>
+			<a th:href="@{/department/search?currentPage=0&size=5}">1</a> 
+			<a th:href="@{/department/search?currentPage=1&size=5}">2</a>
+		</div>
+
+		<table border="1" class="table table-bordered">
+			<tr>
+				<td>ID</td>
+				<td>Name</td>
+				<td>Created At</td>
+				<td>Action</td>
+			</tr>
+			<!-- bang noi dung voi Expression Language -->
+			<tr th:each="d : ${departmentList}">
+				<td th:text=${d.id}>1</td>
+				<td th:text=${d.name}>Test</td>
+				<td th:text=${#dates.format(d.createdAt,'dd/MM/yyyy')}>
+					<!-- se goi ham getName() -->
+				<td><a th:href="@{'/department/delete?id=' + ${d.id} }">Delete</a>
+					<a th:href="@{'/department/edit?id=' + ${d.id} }">Edit</a></td>
+			</tr>
+		</table>
+
+	</div>
+
+</body>
+
+
+</html>
