@@ -5,6 +5,12 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,17 +31,27 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Autowired
 	private DepartmentRepo departmentRepo;
 
+	@Autowired
+	CacheManager cacheManager;
+
 	@Override
 	@Transactional
+	@CacheEvict(cacheNames = "department-search", allEntries = true)	
 	public void create(DepartmentDTO departmentDTO) {
 		// TODO Auto-generated method stub
 		Department department = new ModelMapper().map(departmentDTO, Department.class);
 		departmentRepo.save(department);
+		
+		Cache cache= cacheManager.getCache("department-search");
+		cache.invalidate();
+
 	}
 
 	@Override
 	@Transactional
-	public void update(DepartmentDTO departmentDTO) {
+	@Caching(evict = { @CacheEvict(cacheNames = "department-search", allEntries = true) }, put = {
+			@CachePut(cacheNames = "department", key = "#departmentDTO.id") })
+	public DepartmentDTO update(DepartmentDTO departmentDTO) {
 		// TODO Auto-generated method stub
 		Department department = departmentRepo.findById(departmentDTO.getId()).orElse(null);
 		// neu co thi update thuoc tinh
@@ -45,20 +61,26 @@ public class DepartmentServiceImpl implements DepartmentService {
 			departmentRepo.save(department);
 
 		}
+		return convert(department); // return updated DepartmentDTO for cache
 	}
-	
+
 	@Override
 	@Transactional
+	// Caching gop cac annotation Cache
+	@Caching(evict = { @CacheEvict(cacheNames = "department", key = "#id"),
+			@CacheEvict(cacheNames = "department-search", allEntries = true) })
 	public void delete(int id) {
 		// TODO Auto-generated method stub
-		
+
 		departmentRepo.deleteById(id);
 	}
-	
-	
+
 	@Override
+	@Cacheable(cacheNames = "department", key = "#id", unless = "#result == null") // neu result la null,ko luu vao
+																					// cache
 	public DepartmentDTO getById(int id) {
 		// TODO Auto-generated method stub
+		System.out.println("No cache");
 		Department department = departmentRepo.findById(id).orElseThrow(NoResultException::new);
 		/*
 		 * List<User> users=department.getUsers(); System.out.println(users.size());
@@ -68,6 +90,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "department-search", key = "#searchDTO") // neu result la// null,ko luu vao // cache
 	public PageDTO<List<DepartmentDTO>> search(SearchDTO searchDTO) {
 		// TODO Auto-generated method stub
 		Sort sortBy = Sort.by("name").ascending();
@@ -84,11 +107,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 		if (searchDTO.getSize() == null) {
 			searchDTO.setSize(10);
 		}
-		
-		if(searchDTO.getKeyword() == null) {
+
+		if (searchDTO.getKeyword() == null) {
 			searchDTO.setKeyword("");
 		}
-		
+
 		PageRequest pageRequest = PageRequest.of(searchDTO.getCurrentPage(), searchDTO.getSize(), sortBy);
 		Page<Department> page = departmentRepo.searchName("%" + searchDTO.getKeyword() + "%", pageRequest);
 

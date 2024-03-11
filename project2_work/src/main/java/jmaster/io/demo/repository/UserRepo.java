@@ -15,7 +15,7 @@ public interface UserRepo
 extends JpaRepository<User, Integer>{
 	//tim theo username
 	//Select user where username=?
-	@Query("SELECT u FROM User u WHERE month(u.birthdate) = :m AND day(u.birthdate) = :d ")
+	@Query("SELECT u FROM User u WHERE MONTH(u.birthdate) = :m AND DAY(u.birthdate) = :d ")
 	List<User> findByBirthdate(@Param("d") int d, @Param("m") int m);
 
 	@Query("SELECT u FROM User u WHERE u.name LIKE :x ")

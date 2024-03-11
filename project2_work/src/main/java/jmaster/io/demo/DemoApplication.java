@@ -4,8 +4,10 @@ import java.util.Locale;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,6 +16,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableScheduling
+@EnableCaching //redis key-value
 public class DemoApplication 
 implements WebMvcConfigurer {
 

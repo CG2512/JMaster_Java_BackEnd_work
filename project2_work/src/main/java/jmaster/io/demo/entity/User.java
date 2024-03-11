@@ -54,4 +54,6 @@ public class User extends TimeAuditable {
 	
 	@ManyToOne  
 	private Department department;
+	
+	private String email;
 }
