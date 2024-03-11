@@ -61,7 +61,7 @@ public class EmailService {
 			helper.setTo(to);
 			helper.setSubject(subject);
 			helper.setText(body, true);
-			helper.setFrom("tranhongphu0210@gmail.com");
+			helper.setFrom("");
 
 			javaMailSender.send(message);
 		} catch (MessagingException e) {
