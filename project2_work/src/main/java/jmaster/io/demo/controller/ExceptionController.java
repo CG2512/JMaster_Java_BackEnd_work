@@ -7,6 +7,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -55,5 +57,21 @@ public class ExceptionController {
 		log.info("INFO",e);
 		return ResponseDTO.<String>builder()
 				.status(409).msg("Duplicated Data").build();
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(code=HttpStatus.FORBIDDEN)
+	public ResponseDTO accessDeny(Exception e) {
+		log.info("INFO",e);
+
+		return ResponseDTO.<Void>builder().status(403).msg("Access Deny").build();
+	}
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	@ResponseStatus(code=HttpStatus.UNAUTHORIZED)
+	public ResponseDTO unauthorized(Exception e) {
+		log.info("INFO",e);
+
+		return ResponseDTO.<Void>builder().status(401).msg("Unauthorized").build();
 	}
 }

@@ -1,5 +1,6 @@
 package jmaster.io.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,11 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -27,29 +33,54 @@ import jmaster.io.demo.repository.UserRepo;
 //@Component //nhu @Service
 @Service // tao bean,new Userservice , quan li boi SpringContainer
 
-public class UserService {
+public class UserService implements UserDetailsService {
 	@Autowired
 	UserRepo userRepo;
 
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User userEntity = userRepo.findByUsername(username);
+
+		if (userEntity == null) {
+			throw new UsernameNotFoundException("Not found");
+		}
+		// convert User to UserDetails
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+		for (String role : userEntity.getRoles()) {
+			authorities.add(new SimpleGrantedAuthority(role));
+		}
+
+		// spring security's User from Userdetails
+		return new org.springframework.security.core.userdetails.User(username, userEntity.getPassword(), authorities);
+	}
+
 	@Transactional // rollback data neu ham co van de khi CRUD
-	@CacheEvict(cacheNames = "user-search", allEntries = true)
+
+	@Caching(evict = { @CacheEvict(cacheNames = "user", key = "#id"),
+
+			@CacheEvict(cacheNames = "user-search", allEntries = true)})
+
 	public void create(UserDTO userDTO) {
 
 		User user = new ModelMapper().map(userDTO, User.class);
 		// System.out.println("Department is "+user.getDepartment().getId());
+		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 		userRepo.save(user);
 	}
 
 	@Transactional // rollback data neu ham co van de khi CRUD
 	@Caching(evict = { @CacheEvict(cacheNames = "user", key = "#id"),
-			@CacheEvict(cacheNames = "user-search", allEntries = true) })
+			@CacheEvict(cacheNames = "user-search", allEntries = true),
+			@CacheEvict(cacheNames = "user-list", allEntries = true) })
 	public void delete(int id) {
 		userRepo.deleteById(id);
 	}
 
 	@Transactional // create/update dung ham save cua JPA
-	@Caching(evict = { @CacheEvict(cacheNames = "user-search", allEntries = true) }, put = {
-			@CachePut(cacheNames = "user", key = "#userDTO.id") })
+	@Caching(evict = { @CacheEvict(cacheNames = "user-search", allEntries = true),
+			@CacheEvict(cacheNames = "user-search", allEntries = true) }, put = {
+					@CachePut(cacheNames = "user", key = "#userDTO.id") })
 	public void update(UserDTO userDTO) {
 
 		// check xem User co ton tai truoc ko de update
@@ -71,15 +102,16 @@ public class UserService {
 	}
 
 	@Transactional // create/update dung ham save cua JPA
-	@Caching(evict = { @CacheEvict(cacheNames = "user-search", allEntries = true) }, put = {
-			@CachePut(cacheNames = "user", key = "#userDTO.id") })
+	@Caching(evict = { @CacheEvict(cacheNames = "user-search", allEntries = true),
+			@CacheEvict(cacheNames = "user-search", allEntries = true) }, put = {
+					@CachePut(cacheNames = "user", key = "#userDTO.id") })
 	public void updatePassword(UserDTO userDTO) {
 
 		// check xem User co ton tai truoc ko de update
 		User currentUser = userRepo.findById(userDTO.getId()).orElse(null);
 		// neu co thi update thuoc tinh
 		if (currentUser != null) {
-			currentUser.setPassword(userDTO.getPassword());
+			currentUser.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
 
 			userRepo.save(currentUser);
 		}
@@ -94,7 +126,7 @@ public class UserService {
 		}
 		return null;
 	}
-	
+
 	@Cacheable(cacheNames = "user-search")
 	public List<UserDTO> getAll() {
 		List<User> userList = userRepo.findAll();

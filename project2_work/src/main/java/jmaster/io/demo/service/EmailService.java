@@ -23,7 +23,7 @@ public class EmailService {
 
 
 	public void testEmail() {
-		String to = "throw2512@gmail.com";
+		String to = "send@gmail.com";
 		String subject = "Testing Java mail";
 		String body = "<h1>Testing if Java mail works</h1>";
 

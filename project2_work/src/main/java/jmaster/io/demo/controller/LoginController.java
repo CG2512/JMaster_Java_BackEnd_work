@@ -2,46 +2,32 @@ package jmaster.io.demo.controller;
 
 import java.io.IOException;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jmaster.io.demo.dto.ResponseDTO;
+import jmaster.io.demo.service.JwtTokenService;
 
-@Controller
+@RestController
 public class LoginController {
 
-	@GetMapping("/login")
-	public String login() {
-		//map url vao 1 ham,tra ve ten file view
-		return "login.html";
-	}
-	
+	@Autowired
+	AuthenticationManager authenticationManager;
+
+	@Autowired
+	JwtTokenService jwtTokenService;
 	@PostMapping("/login")
-	public String login(
-			HttpSession session,
-			@RequestParam("username") String username,
-			@RequestParam("password") String password
-			) throws IOException {
-		//String username= req.getParameter("username");
-		//String password= req.getParameter("password");
+	public ResponseDTO<String> login(@RequestParam("username") String username,
+			@RequestParam("password") String password) throws IOException {
+		// authen,throw exception if fail
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		//login success then generate jwt token,
 		
-		if (username.equals("admin") && password.equals("123") ) {
-			//login dung
-			//SESSION - luu tam data
-			
-			session.setAttribute("username", username);
-			
-			//redirect
-			return "redirect:/hello";
-		
-		} else {
-			//redirect - yeu cau client goi lai
-			return "redirect:/login";
-		}
+		return ResponseDTO.<String>builder().status(200).data(jwtTokenService.createToken(username)).build();
 	}
-	
+
 }

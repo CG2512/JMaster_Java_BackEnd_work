@@ -39,5 +39,7 @@ extends JpaRepository<User, Integer>{
 
 	@Query("SELECT u FROM User u WHERE u.name LIKE :x AND u.createdAt <= :end")
 	Page<User> searchByNameAndEndDate(@Param("x") String s, @Param("end") Date end, Pageable pageable);
+	
+	User findByUsername(String username);
 
 }

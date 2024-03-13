@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import jmaster.io.demo.entity.User;
@@ -22,7 +21,7 @@ public class JobSchedule {
 	@Autowired
 	EmailService emailService;
 
-	@Scheduled(fixedDelay = 60000) // ms
+	//@Scheduled(fixedDelay = 60000) // ms
 	public void hello() {
 		log.info("hello");
 		//emailService.testEmail();

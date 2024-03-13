@@ -25,6 +25,7 @@ public class ResponseDTO<T> {
 		this.status = status;
 		this.msg = msg;
 	}
+
 	
 	
 }
