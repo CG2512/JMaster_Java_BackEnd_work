@@ -1,0 +1,27 @@
+<html>
+
+<head>
+<title>NewBill.html</title>
+</head>
+
+<body>
+	<h1>
+		Your purchase
+	</h1>
+	<div>
+	<table border="1" class="table table-bordered">
+			<tr>
+				
+				<td>Product</td>
+				<td>Quantity</td>
+				<td>Price</td>
+			</tr>
+			<!-- bang noi dung voi Expression Language -->
+			<tr th:each="b : ${billItems}">
+				<td th:text=${b.product.name}>1</td>
+				<td th:text=${b.quantity}>Test</td>
+				<td th:text=${b.buyPrice}>Test</td>
+		</table>
+	</div>
+</body>
+</html>

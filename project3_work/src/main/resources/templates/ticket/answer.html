@@ -1,0 +1,62 @@
+<html layout:decorate="/template.html">
+<head>
+<title>Edit Ticket</title>
+</head>
+
+
+<body>
+
+	<!-- <p>Ko co trong giao dien</p>  -->
+
+	<div layout:fragment="content">
+		<form th:action="@{/ticket/answer}" method="post" th:object="${ticket}">
+
+			<div>
+				<label for=id class="form-lable">ID</label> 
+				<input readonly name="id"
+					th:value="${ticket.id}"
+					class="form-control">
+			</div>
+			
+			<div>
+				<label for=clientName>Client Name</label> 
+				<input readonly th:field="${ticket.clientName}"
+					th:value="${ticket.clientName}"
+					class="form-control">
+			</div>
+			
+			<div>
+				<label for=clientPhone>phone</label> 
+				<input readonly th:field="${ticket.clientPhone}"
+					th:value="${ticket.clientPhone}"
+					class="form-control">
+			</div>
+			
+			<div>
+				<label for=clientComplaint class="form-lable">Complaint</label> 
+				<textarea readonly th:field="${ticket.clientComplaint}"
+					
+					class="form-control"></textarea>
+			</div>
+			
+			<div>
+			<label class="form-lable">Answer</label>
+			<textarea th:field="*{answer}" rows="3"
+			class="form-control"></textarea>
+			</div>
+			
+			<div>
+			<label class="form-lable">Process date</label>
+			<input th:field="*{processDate}"
+			class="form-control"
+			placeholder="dd/MM/YYYY">
+			</div>
+		
+		<button type="submit" class="btn btn-primary mb-3">Submit</button>
+		</form>
+
+	</div>
+
+</body>
+
+</html>
