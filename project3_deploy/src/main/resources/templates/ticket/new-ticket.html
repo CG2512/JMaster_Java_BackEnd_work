@@ -1,0 +1,51 @@
+<html layout:decorate="/template.html">
+<head>
+<title>New ticket</title>
+</head>
+
+
+<body>
+
+
+	<div layout:fragment="content">
+		<form th:action=@{/ticket/new} method=post th:object="${ticket}">
+			<div class="mb-3 mt-3">
+				<label class="form-label">Department</label> <select name="department.id">
+					<option th:each="d : ${departmentList}" th:value="${d.id}"
+						th:text="${d.name}" 
+						class="form-select">
+				</select>
+			</div>
+			
+			<div class="mb-3">
+				<label class="form-label">Client name</label> 
+				<input th:field="*{clientName}" class="form-control">
+				<p th:errors="*{clientName}">
+			</div>
+			
+			<div class="mb-3">
+				<label class="form-label">Client Number</label> 
+				<input th:field="*{clientPhone}" class="form-control">
+				<p th:errors="*{clientPhone}">
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Complaint</label> 
+				<textarea class="form-control" th:field="*{clientComplaint}" rows="3"></textarea>
+				<p th:errors="*{clientComplaint}">
+			</div>
+
+			<div class="mb-3">
+				<label for="createdAt" class="form-label">Created at</label> 
+				<input type="text"
+					th:field="*{createdAt}"
+					class="form-control"
+					placeholder="dd/MM/YYYY">
+				
+			</div>
+
+	<button type="submit" class="btn btn-primary mb-3">Submit</button>
+	</form>
+	</div>
+</body>
+</html>

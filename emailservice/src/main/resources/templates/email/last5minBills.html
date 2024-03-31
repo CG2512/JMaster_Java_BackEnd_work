@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Last5minBills.html</title>
+</head>
+<body>
+	<h1>New bills in the last 5 minutes</h1>
+	<div>
+		<table border="1" class="table table-bordered">
+			<tr>
+				<td>Bill ID</td>
+				<td>User ID</td>
+				<td>Username</td>
+				<td>Status</td>
+				<td>CreatedAt</td>
+
+			</tr>
+			<!-- bang noi dung voi Expression Language -->
+			<tr th:each="b : ${bills}">
+				<td th:text=${b.id}>1</td>
+				<td th:text=${b.user.id}>Test</td>
+				<td th:text=${b.user.username}>Test</td>
+				<td th:text=${b.status}>Test</td>
+				<td th:text="${b.createdAt}">Test</td>
+		</table>
+	</div>
+</body>
+
+
+</html>
